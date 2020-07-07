@@ -1,2 +1,2 @@
 # d3-challenge
-using d3 to create interactive graphs
+Using d3 to create interactive graphs of the Community Survey Data from 2014.
