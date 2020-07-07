@@ -11,7 +11,7 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-// Create an SVG wrapper, append an SVG group that will hold our chart,
+// Create an SVG wrapper, append an SVG group that will hold the chart,
 // and shift the latter by left and top margins.
 var svg = d3
     .select("#scatter")
@@ -184,14 +184,14 @@ d3.csv("assets/data.csv", function (d) {
         .attr("fill", "teal")
         .attr("opacity", ".70");
 
-    //append text for circles do this but with text
-    var textGroup = chartGroup.selectAll("text")
+    //append text in circles
+    var textGroup = chartGroup.selectAll(null)
         .data(usData)
         .enter()
         .append("text")
         .attr("x", d => xLinearScale(d[chosenXAxis]))
         .attr("y", d => yLinearScale(d[chosenYAxis]) + 7)
-        .text(d => d.id)
+        .text(d => d.pc)
         .attr("text-anchor", "middle")
         .attr("font-family", "sans-serif")
         .attr("font-size", "20px")
@@ -207,21 +207,21 @@ d3.csv("assets/data.csv", function (d) {
         .attr("y", 20)
         .attr("value", "age") // value to grab for event listener
         .classed("active", true)
-        .text("Average Age (years)");
+        .text("Median Age (years)");
 
     var healthcareLabel = xlabelsGroup.append("text")
         .attr("x", 0)
         .attr("y", 40)
         .attr("value", "healthcare") // value to grab for event listener
         .classed("inactive", true)
-        .text("Healthcare (units)");
+        .text("Percent Who Lack Healthcare");
 
     var incomeLabel = xlabelsGroup.append("text")
         .attr("x", 0)
         .attr("y", 60)
         .attr("value", "income") // value to grab for event listener
         .classed("inactive", true)
-        .text("Average Income ($/year)");
+        .text("Median Income ($/year)");
 
     // Create group for y-axis labels
     var ylabelsGroup = chartGroup.append("g")
@@ -268,14 +268,14 @@ d3.csv("assets/data.csv", function (d) {
                 // updates y axis with transition
                 yAxis = renderYAxes(yLinearScale, yAxis);
 
-                // updates circles with new x values
+                // updates circles with new y values
                 circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // updates text with new y values
                 textGroup = renderText(textGroup, xLinearScale, chosenXAxis, yLinearScale, chosenYAxis);
 
                 // // updates tooltips with new info
-                // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+                // circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                 // changes classes to change bold text
                 if (chosenYAxis === "smokes") {
@@ -324,8 +324,8 @@ d3.csv("assets/data.csv", function (d) {
 
                 // replaces chosenXAxis with value
                 chosenXAxis = value;
-                // console.log("chosen YAxis");
-                // console.log(chosenYAxis);
+                console.log("chosen XAxis");
+                console.log(chosenXAxis);
 
                 // functions here found above csv import
                 // updates x scale for new data
@@ -383,135 +383,3 @@ d3.csv("assets/data.csv", function (d) {
 
 });
 
-// d3.csv("assets/data.csv").then(function (usData, err) {
-//     if (err) throw err;
-
-//     // parse data
-//     usData.forEach(function (data) {
-//         data.id = +data.id;
-//         //parse states? or abbr?
-//         data.poverty = +data.poverty;
-//         data.age = +data.age;
-//         data.income = +data.income;
-//         data.healthcare = +data.healthcare;
-//         data.obesity = +data.obesity;
-//         data.smokes = +data.smokes;
-//     });
-
-//     console.log(typeof(data.id));
-
-//     // // xLinearScale function above csv import
-//     // var xLinearScale = xScale(usData, chosenXAxis);
-
-//     // // yLinearScale function above csv import
-//     // var yLinearScale = yScale(usData, chosenYAxis);
-
-//     //   // Create y scale function
-//     //   var yLinearScale = d3.scaleLinear()
-//     //     .domain([0, d3.max(usData, d => d.num_hits)])
-//     //     .range([height, 0]);
-
-//     //   // Create initial axis functions
-//     //   var bottomAxis = d3.axisBottom(xLinearScale);
-//     //   var leftAxis = d3.axisLeft(yLinearScale);
-
-//     //   // append x axis
-//     //   var xAxis = chartGroup.append("g")
-//     //     .classed("x-axis", true)
-//     //     .attr("transform", `translate(0, ${height})`)
-//     //     .call(bottomAxis);
-
-//     //   // append y axis
-//     //   chartGroup.append("g")
-//     //     .call(leftAxis);
-
-//     // append initial circles
-//     // var circlesGroup = chartGroup.selectAll("circle")
-//     //     .data(usData)
-//     //     .enter()
-//     //     .append("circle")
-//     //     .attr("cx", d => xLinearScale(d[chosenXAxis]))
-//     //     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-//     //         .attr("r", 20)
-//     //         .attr("fill", "pink")
-//     //         .attr("opacity", ".5");
-
-//     //   // Create group for two x-axis labels
-//     //   var labelsGroup = chartGroup.append("g")
-//     //     .attr("transform", `translate(${width / 2}, ${height + 20})`);
-
-//     //   var hairLengthLabel = labelsGroup.append("text")
-//     //     .attr("x", 0)
-//     //     .attr("y", 20)
-//     //     .attr("value", "hair_length") // value to grab for event listener
-//     //     .classed("active", true)
-//     //     .text("Hair Metal Ban Hair Length (inches)");
-
-//     //   var albumsLabel = labelsGroup.append("text")
-//     //     .attr("x", 0)
-//     //     .attr("y", 40)
-//     //     .attr("value", "num_albums") // value to grab for event listener
-//     //     .classed("inactive", true)
-//     //     .text("# of Albums Released");
-
-//     //   // append y axis
-//     //   chartGroup.append("text")
-//     //     .attr("transform", "rotate(-90)")
-//     //     .attr("y", 0 - margin.left)
-//     //     .attr("x", 0 - (height / 2))
-//     //     .attr("dy", "1em")
-//     //     .classed("axis-text", true)  
-//     //     .text("Number of Billboard 500 Hits");
-
-//     //   // updateToolTip function above csv import
-//     //   var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
-
-//     //   // x axis labels event listener
-//     //   labelsGroup.selectAll("text")
-//     //     .on("click", function() {
-//     //       // get value of selection
-//     //       var value = d3.select(this).attr("value");
-//     //       if (value !== chosenXAxis) {
-
-//     //         // replaces chosenXAxis with value
-//     //         chosenXAxis = value;
-
-//     //         // console.log(chosenXAxis)
-
-//     //         // functions here found above csv import
-//     //         // updates x scale for new data
-//     //         xLinearScale = xScale(hairData, chosenXAxis);
-
-//     //         // updates x axis with transition
-//     //         xAxis = renderXAxes(xLinearScale, xAxis);
-//     //         // updates x axis with transition
-//     //         yAxis = renderYAxes(yLinearScale, yAxis);
-
-//     //         // updates circles with new x values
-//     //         circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
-
-//     //         // updates tooltips with new info
-//     //         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
-
-//     //         // changes classes to change bold text
-//     //         if (chosenXAxis === "num_albums") {
-//     //           albumsLabel
-//     //             .classed("active", true)
-//     //             .classed("inactive", false);
-//     //           hairLengthLabel
-//     //             .classed("active", false)
-//     //             .classed("inactive", true);
-//     //         }
-//     //         else {
-//     //           albumsLabel
-//     //             .classed("active", false)
-//     //             .classed("inactive", true);
-//     //           hairLengthLabel
-//     //             .classed("active", true)
-//     //             .classed("inactive", false);
-//     //         }
-//     //       }
-//     //     });
-// }).catch(function (error) {
-//     console.log(error);
-// });
